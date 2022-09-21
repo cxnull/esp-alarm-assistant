@@ -1,5 +1,5 @@
 # esp-alarm-assistant
-**esp-alarm-assistant** is a solution for making an alarm controllable in Home Assistant by using relays to press remote control buttons, and a microphone to determine whether the siren is ringing.
+**esp-alarm-assistant** is a solution for making an alarm controllable in [Home Assistant](https://www.home-assistant.io/) by using relays to press remote control buttons, and a microphone to determine whether the siren is ringing.
 
 This project was designed for an [M5StickC Plus](https://shop.m5stack.com/products/m5stickc-plus-esp32-pico-mini-iot-development-kit), and has been tested with a [Somfy Protexiom](https://boutique.somfy.fr/alarme-securite/somfy-protect/alarmes-sans-fil.html) alarm and [this remote control](https://boutique.somfy.fr/telecommande-alarme-on-off-groupes.html).
 
