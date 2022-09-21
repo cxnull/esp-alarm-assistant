@@ -26,7 +26,9 @@ This project was designed for an M5StickC Plus, and has been tested with a [Somf
 # Getting started
 
 ## Hardware
-- 
+- On your alarm's remote control buttons, identify which pins you need to short in order to trigger the arming and disarming. On [this Somfy remote control](https://boutique.somfy.fr/telecommande-alarme-on-off-groupes.html), the two connectors on one side of each button can be used (e.g. the two left pins of each button, or the two right pins of each button)
+- Solder leads to those pins on one side, and connect them to the relays on the other side.
+- Once the code has been uploaded and tested on the M5StickC PLUS, install the assembly close to the alarm siren, but in a place where it can't be seen and found easily.
 
 ## Software
 
@@ -34,5 +36,5 @@ This project was designed for an M5StickC Plus, and has been tested with a [Somf
 - The whole sound level detection part was taken from [this project](https://qiita.com/tomoto335/items/263b23d9ba156de12857) by [@tomoto335](https://twitter.com/tomoto335). The original source code is available [here](https://gist.githubusercontent.com/tomoto/6a1b67d9e963f9932a43c984171d80fb/raw/4c27b16745debfc93d39006bb03307d3958a3b28/LoudnessMeter.ino).
 - The [M5StickC Plus documentation](https://github.com/m5stack/M5StickC-Plus)
 
-# Disclaimer
-The author takes no responsability
+# License
+**esp-alarm-assistant** is licensed under the [MIT License](LICENSE)
