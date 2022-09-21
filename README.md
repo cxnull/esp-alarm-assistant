@@ -1,15 +1,16 @@
 # esp-alarm-assistant
 **esp-alarm-assistant** is a solution for making an alarm controllable in Home Assistant by using relays to press remote control buttons, and a microphone to determine whether the siren is ringing.
 
-This project was designed for an M5StickC Plus, and has been tested with a [Somfy Protexiom](https://boutique.somfy.fr/alarme-securite/somfy-protect/alarmes-sans-fil.html) alarm and [this remote control](https://boutique.somfy.fr/telecommande-alarme-on-off-groupes.html).
+This project was designed for an [M5StickC Plus](https://shop.m5stack.com/products/m5stickc-plus-esp32-pico-mini-iot-development-kit), and has been tested with a [Somfy Protexiom](https://boutique.somfy.fr/alarme-securite/somfy-protect/alarmes-sans-fil.html) alarm and [this remote control](https://boutique.somfy.fr/telecommande-alarme-on-off-groupes.html).
 
 ## Features
-- Arm and disarm your alarm remotely or via automations thanks to Home Assistant
+- Arm and disarm your alarm remotely or via automations thanks to Home Assistant (via geolocation for example)
 - Get notifications if your alarm's siren is ringing (if the minimum sound level measured during a certain amount of time is above a certain threshold)
 - Cause your alarm's siren to ring if your alarm supports it ("panic mode"), for example if your [Frigate](https://frigate.video/) instance has detected a person.
 - ... get metrics and act on the ambiant sound level, for rudimentary presence detection?
 
 ## Preview
+
 
 # Prerequisites
 
@@ -26,7 +27,7 @@ This project was designed for an M5StickC Plus, and has been tested with a [Somf
 # Getting started
 
 ## Hardware
-- On your alarm's remote control buttons, identify which pins you need to short in order to trigger the arming and disarming. On [this Somfy remote control](https://boutique.somfy.fr/telecommande-alarme-on-off-groupes.html), the two connectors on one side of each button can be used (e.g. the two left pins of each button, or the two right pins of each button)
+- On your alarm's remote control buttons, identify which button pins you need to short in order to trigger the arming and disarming. On [this Somfy remote control](https://boutique.somfy.fr/telecommande-alarme-on-off-groupes.html), the two connectors on one side of each button can be used (e.g. the two left pins of each button, or the two right pins of each button)
 - Solder leads to those pins on one side, and connect them to the relays on the other side.
 - Once the code has been uploaded and tested on the M5StickC PLUS, install the assembly close to the alarm siren, but in a place where it can't be seen and found easily.
 
