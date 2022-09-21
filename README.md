@@ -10,7 +10,7 @@ This project was designed for an [M5StickC Plus](https://shop.m5stack.com/produc
 - ... get metrics and act on the ambiant sound level, for rudimentary presence detection?
 
 ## Preview
-
+![Preview](doc/preview.jpg)
 
 # Prerequisites
 
@@ -32,9 +32,40 @@ This project was designed for an [M5StickC Plus](https://shop.m5stack.com/produc
 - Once the code has been uploaded and tested on the M5StickC PLUS, install the assembly close to the alarm siren, but in a place where it can't be seen and found easily.
 
 ## Software
+- Edit [esp-alarm-assistant.ino](src/esp-alarm-assistant.ino) in order to configure your M5StickC Plus:
+
+``` c
+// Configuration
+const char* ssid            = "Wi-Fi SSID";                                 // Wi-Fi SSID
+const char* password        = "Wi-Fi password";                             // Wi-Fi password
+const char* mqtt_server     = "MQTT broker IP address";                     // MQTT broker IP address
+const uint16_t mqtt_port    = 12345;                                        // MQTT broker port
+const char* mqtt_login      = "MQTT broker username";                       // MQTT broker username
+const char* mqtt_password   = "MQTT broker password";                       // MQTT broker password
+const char* mqtt_topic      = "MQTT topic for controlling the alarm";       // MQTT topic for controlling the alarm
+const char* mqtt_topic_db   = "MQTT topic for reporting noise level";       // MQTT topic for reporting noise level
+const char* arm_message     = "MQTT payload for arming the alarm";          // MQTT payload for arming the alarm
+const char* disarm_message  = "MQTT payload for disarming the alarm";       // MQTT payload for disarming the alarm
+const char* sos_message     = "MQTT payload for sounding the alarm";        // MQTT payload for sounding the alarm
+const uint16_t sos_duration = 16000;                                        // Milliseconds on the "ON" button for sounding the alarm
+const uint16_t send_every   = 5000;                                         // Milliseconds between sound level reports
+const uint16_t time_between_samples = 100;                                  // Milliseconds between each sound measurement
+```
+- Once the code is uploaded on the M5StickC Plus, you should:
+  - See it on your network
+  - Start seeing MQTT messages coming in with sound level reports. If you're using the Home Assistant "Mosquitto broker" add-on, go to Settings --> Devices & Services --> On the "Mosquitto broker" add-on card, click on "CONFIGURE" --> In the "Listen to a topic" card, enter what you entered for "MQTT topic for reporting noise level" and click on "START LISTENING". You should see these kinds of messages come in at the frequency you set for `send_every`
+  
+ ``` json
+ {
+    "min": 33.1,
+    "avg": 37.92,
+    "max": 48.85,
+    "N": 50
+}
+```
 
 # Acknowledgements
-- The whole sound level detection part was taken from [this project](https://qiita.com/tomoto335/items/263b23d9ba156de12857) by [@tomoto335](https://twitter.com/tomoto335). The original source code is available [here](https://gist.githubusercontent.com/tomoto/6a1b67d9e963f9932a43c984171d80fb/raw/4c27b16745debfc93d39006bb03307d3958a3b28/LoudnessMeter.ino).
+- The whole sound level detection part was taken from [this awesome project](https://qiita.com/tomoto335/items/263b23d9ba156de12857) by [@tomoto335](https://twitter.com/tomoto335). The original source code is available [here](https://gist.githubusercontent.com/tomoto/6a1b67d9e963f9932a43c984171d80fb/raw/4c27b16745debfc93d39006bb03307d3958a3b28/LoudnessMeter.ino).
 - The [M5StickC Plus documentation](https://github.com/m5stack/M5StickC-Plus)
 
 # License
