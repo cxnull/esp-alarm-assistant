@@ -83,6 +83,11 @@ alarm_control_panel:
     arming_time: 120
     trigger_time: 0
 ```
+And the following in your `secrets.yaml` file:
+``` yaml
+code_alarme: 1234
+```
+
 then restart Home Assistant
 
 ### Automation for sending the arming message
