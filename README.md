@@ -1,11 +1,13 @@
 # esp-alarm-assistant
 Makes an alarm controllable in Home Assistant by using relays to press remote control buttons, and a microphone to determine whether the siren is ringing.
 
+This project was designed for an M5StickC Plus, and has been tested with a [Somfy Protexiom](https://boutique.somfy.fr/alarme-securite/somfy-protect/alarmes-sans-fil.html) alarm and [this remote control](https://boutique.somfy.fr/telecommande-alarme-on-off-groupes.html).
+
 ## Features
-- Arm and disarm your alarm remotely
-- Get notifications if your alarm's siren is ringing (if the minimum sound level measured during a certain amount of time is above a certain threshold
-- Cause your alarm's siren to ring if your alarm supports it ("panic mode")
-- ... get metrics and act on the ambiant sound level ?
+- Arm and disarm your alarm remotely or via automations thanks to Home Assistant
+- Get notifications if your alarm's siren is ringing (if the minimum sound level measured during a certain amount of time is above a certain threshold)
+- Cause your alarm's siren to ring if your alarm supports it ("panic mode"), for example if your [Frigate](https://frigate.video/) instance has detected a person.
+- ... get metrics and act on the ambiant sound level, for rudimentary presence detection?
 
 ## Preview
 
@@ -26,3 +28,7 @@ Makes an alarm controllable in Home Assistant by using relays to press remote co
 ## Hardware
 
 ## Software
+
+# Acknowledgements
+- The whole sound level detection part was taken from [this project](https://qiita.com/tomoto335/items/263b23d9ba156de12857) by [@tomoto335](https://twitter.com/tomoto335).
+- The [M5StickC Plus documentation](https://github.com/m5stack/M5StickC-Plus)
