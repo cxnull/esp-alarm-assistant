@@ -76,21 +76,52 @@ Enter the following in your `configuration.yaml` file:
 alarm_control_panel:
   - platform: manual
     name: Smart Alarm
-    code: !secret code_alarme
+    code: !secret alarm_code
     code_arm_required: false
     disarm_after_trigger: false
     delay_time: 0
-    arming_time: 120
+    arming_time: 0
     trigger_time: 0
 ```
+
 And the following in your `secrets.yaml` file:
 ``` yaml
-code_alarme: 1234
+alarm_code: 1234
 ```
 
-then restart Home Assistant
+then restart Home Assistant.
+
+In Lovelace you can then create an `Alarm Panel` card for arming and disarming your alarm.
+
+Documentation: https://www.home-assistant.io/integrations/manual/
+
+### Creating sound level sensors
+Enter the following in your `configuration.yaml` file:
+
+``` yaml
+mqtt:
+  sensor:
+    - name: "Alarm min dB"
+      state_topic: ""MQTT topic for reporting noise level""
+      unit_of_measurement: "dB"
+      value_template: "{{ value_json.min }}"
+    - name: "Alarm avg dB"
+      state_topic: ""MQTT topic for reporting noise level""
+      unit_of_measurement: "dB"
+      value_template: "{{ value_json.avg }}"
+    - name: "Alarm max dB"
+      state_topic: ""MQTT topic for reporting noise level""
+      unit_of_measurement: "dB"
+      value_template: "{{ value_json.max }}"
+```
+
+then restart Home Assistant.
+
+Note that only the first sensor ("Alarm min dB") is actually required, but the two others can be nice to have in order to have information about your environment (e.g. for presence detection or other purposes)
 
 ### Automation for sending the arming message
+This automation will be triggered by the alarm control panel
+
 ``` yaml
 alias: 🚨 Send the arming message
 description: ""
@@ -103,23 +134,122 @@ condition: []
 action:
   - service: mqtt.publish
     data:
-      topic: zeVuckingAlarm
-      payload: arm
+      topic: "MQTT topic for controlling the alarm"
+      payload: "MQTT payload for arming the alarm"
 mode: single
-
 ```
-### Automation for sending the arming message
+
+### Automation for sending the disarming message
+This automation will be triggered by the alarm control panel if the code that was entered matches `alarm_code` that was defined in `secrets.yaml` 
+
 ``` yaml
-
+alias: 🚨 Send the disarming message
+description: ""
+trigger:
+  - platform: state
+    entity_id:
+      - alarm_control_panel.smart_alarm
+    to: disarmed
+condition: []
+action:
+  - service: mqtt.publish
+    data:
+      topic: "MQTT topic for controlling the alarm"
+      payload: "MQTT payload for disarming the alarm"
+mode: single
 ```
-### Automation for sending the arming message
+
+### Automation for notifying that the siren is ringing
+This automation sends a notification if the *minimum* sound level is above 80 dB for more than 6 seconds. The notification contains a link to the Lovelace Alarm Control Panel, in this case `/lovelace-test/alarm`. This notification is tailored for use with the Android Companion App. If you're not using Android, you can [check the documentation](https://companion.home-assistant.io/docs/notifications/critical-notifications/) for tuning the notifications accordingly.
+
 ``` yaml
-
+alias: 🚨 Alarm siren is ringing
+description: ""
+trigger:
+  - platform: numeric_state
+    entity_id: sensor.db_min_alarme
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 6
+    above: 80
+condition: []
+action:
+  - service: notify.mobile_app
+    data:
+      title: 🚨 Alarm siren is ringing
+      message: The minimum sound level was above 80 dB for more than 6 seconds
+      data:
+        actions:
+          - action: URI
+            title: Check it out
+            uri: /lovelace-test/alarm
+        ttl: 0
+        priority: high
+        color: red
+        notification_icon: mdi:alarm-light
+        push:
+          sound:
+            name: default
+            volume: 1
+  - service: alarm_control_panel.alarm_trigger
+    data: {}
+    target:
+      entity_id: alarm_control_panel.smart_alarm
+mode: single
 ```
-### Automation for sending the arming message
+
+### Automation for indicating that esp-alarm-assistant is offline
+If there is no change in `sensor.db_min_alarme` for more than one minute, then it's safe to say that esp-alarm-assistant is offline.
 ``` yaml
-
+alias: 🚨 esp-alarm-assistant is offline
+description: ""
+trigger:
+  - platform: state
+    entity_id:
+      - sensor.db_min_alarme
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+condition: []
+action:
+  - service: notify.mobile_app
+    data:
+      title: 🚨 esp-alarm-assistant is offline
+      message: There was no change in sensor.db_min_alarme for more than one minute
+      data:
+        actions:
+          - action: URI
+            title: Check it out
+            uri: /lovelace-test/alarm
+        ttl: 0
+        priority: high
+        color: red
+        notification_icon: mdi:alarm-light
+        push:
+          sound:
+            name: default
+            volume: 1
+mode: single
 ```
+
+### Script for sounding the alarm
+This script can be used by automations or buttons for sounding the alarm by triggering "panic mode" if supported.
+
+``` yaml
+alias: 🚨 Sound the alarm
+sequence:
+  - service: mqtt.publish
+    data:
+      topic: "MQTT topic for controlling the alarm"
+      payload: "MQTT payload for sounding the alarm"
+mode: single
+icon: mdi:alarm-light
+```
+
+### Warning
+The automations created above contain secrets that you might want to hide. If that is the case, there is a [non-trivial way to do this](https://community.home-assistant.io/t/how-to-use-secrets-in-automations-yaml/312824/3?u=cxnull).
 
 # Acknowledgements
 - The whole sound level detection part was taken from [this awesome project](https://qiita.com/tomoto335/items/263b23d9ba156de12857) by [@tomoto335](https://twitter.com/tomoto335). The original source code is available [here](https://gist.githubusercontent.com/tomoto/6a1b67d9e963f9932a43c984171d80fb/raw/4c27b16745debfc93d39006bb03307d3958a3b28/LoudnessMeter.ino).
